@@ -29,7 +29,8 @@ $breadcrumb_item_active = "Manage";
                 <?php
                 $db = dbConn();
                 $sql = "SELECT
-    customers.FirstName
+    appointments.id                
+    , customers.FirstName
     , customers.LastName
     , customers.Email
     , customers.MobileNo
@@ -68,6 +69,7 @@ FROM
                                     <td><?= $row['date'] ?></td>
                                     <td><?= $row['start_time'] ?></td>
                                     <td><?= $row['end_time'] ?></td>
+                                    <td><a href="<?= SYS_URL ?>appointments/issue_jobcard.php?appointment_id=<?= $row['id'] ?>" class="btn btn-warning"><i class="fas fa-calendar"></i> Issue Job Card</a></td>
                                 </tr>
 
                                 <?php
@@ -86,8 +88,3 @@ FROM
 $content = ob_get_clean();
 include '../layouts.php';
 ?>
-<script>
-    function confirmDelete() {
-        return confirm("Are you sure you want to delete this record?");
-    }
-</script>
