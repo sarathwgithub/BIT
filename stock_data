@@ -1,0 +1,62 @@
+/*Data for the table `customers` */
+
+insert  into `customers`(`CustomerId`,`FirstName`,`LastName`,`Email`,`AddressLine1`,`AddressLine2`,`AddressLine3`,`TelNo`,`MobileNo`,`Gender`,`DistrictId`,`RegNo`,`UserId`) values 
+(1,'John','Doe','johndoe@example.com','123 Main St','Apt 101','Anytown','1234567890','9876543210','Male',1,12345,101),
+(2,'Jane','Smith','janesmith@example.com','456 Elm St','Suite 202','Otherville','0987654321','1234567890','Female',2,54321,102),
+(3,'Alice','Johnson','alicejohnson@example.com','789 Oak St','Unit 303','Sometown','1357924680','2468135790','Female',3,67890,103),
+(4,'Bob','Williams','bobwilliams@example.com','321 Pine St','Apt 404','Smalltown','9876543210','1234567890','Male',4,98765,104),
+(5,'Emily','Brown','emilybrown@example.com','654 Maple St','Suite 505','Villagetown','0123456789','9876543210','Female',5,54321,105);
+
+/*Data for the table `issued_items` */
+
+insert  into `issued_items`(`id`,`item_id`,`order_id`,`qty`,`unit_price`,`issued_date`) values 
+(1,1,1,2,899.99,'2023-01-25'),
+(2,2,2,1,699.99,'2023-02-15'),
+(3,3,3,3,249.99,'2023-03-20'),
+(4,4,4,4,129.99,'2023-04-10'),
+(5,5,5,1,499.99,'2023-05-25');
+
+/*Data for the table `item_category` */
+
+insert  into `item_category`(`id`,`category_name`,`status`) values 
+(1,'Electronics',1),
+(2,'Office Supplies',1),
+(3,'Accessories',1),
+(4,'Home Appliances',1),
+(5,'Clothing',1);
+
+/*Data for the table `item_stock` */
+
+insert  into `item_stock`(`id`,`item_id`,`qty`,`unit_price`,`purchase_date`,`supplier_id`,`issued_qty`) values 
+(1,1,100,899.99,'2023-01-15',1,0),
+(2,2,50,699.99,'2023-02-20',2,0),
+(3,3,30,249.99,'2023-03-10',3,0),
+(4,4,80,129.99,'2023-04-05',1,0),
+(5,5,20,499.99,'2023-05-12',2,0);
+
+/*Data for the table `items` */
+
+insert  into `items`(`id`,`item_name`,`item_category`,`status`) values 
+(1,'Laptop',1,1),
+(2,'Mobile Phone',1,1),
+(3,'Printer',2,1),
+(4,'Headphones',3,1),
+(5,'Tablet',1,1);
+
+/*Data for the table `orders` */
+
+insert  into `orders`(`id`,`order_date`,`customer_id`,`shipping_address`,`billing_address`) values 
+(1,'2023-01-20',1,'123 Main St, Anytown','123 Main St, Anytown'),
+(2,'2023-02-10',2,'456 Elm St, Otherville','456 Elm St, Otherville'),
+(3,'2023-03-05',3,'789 Oak St, Sometown','789 Oak St, Sometown'),
+(4,'2023-04-15',4,'321 Pine St, Smalltown','321 Pine St, Smalltown'),
+(5,'2023-05-30',5,'654 Maple St, Villagetown','654 Maple St, Villagetown');
+
+/*Data for the table `supplier` */
+
+insert  into `supplier`(`id`,`supplier_name`,`register_date`,`status`) values 
+(1,'ABC Electronics','2022-01-10',1),
+(2,'XYZ Suppliers','2022-02-15',1),
+(3,'PQR Tech','2022-03-20',1),
+(4,'LMN Distributors','2022-04-25',1),
+(5,'EFG Enterprises','2022-05-30',1);
