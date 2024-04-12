@@ -1,3 +1,10 @@
+<html>
+    <head>
+        <title>
+            Cart
+        </title>
+    </head>
+    <body>
 <?php
 include '../function.php';
 $db=dbConn();
@@ -24,10 +31,13 @@ if ($result->num_rows > 0) {
                 <?= $row['item_name'] ?>
                 <?= $row['unit_price'] ?>
             <form method="post" action="shopping_cart.php">
-                <input type="hidden" name="sku" value="<?= $row['id'] ?>">
+                <input type="hidden" name="id" value="<?= $row['id'] ?>">
                 <button type="submit" name="operate" value="add_cart">Add to Cart</button>                
             </form>
         </div>
         <?php
     }
 }
+?>
+    </body>
+</html>
