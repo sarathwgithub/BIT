@@ -1,0 +1,23 @@
+public function issue_jobcard() {
+        $data['breadcrumb_item1'] = "Appointment";
+        $data['breadcrumb_item2'] = "Jobcard";
+        $appointment = new AppointmentModel();
+        $data['appointment'] = $appointment->join('customers', 'customers.Id=appointments.customer_id', 'inner')->where(['appointments.id' => $this->request->getPost('appointment_id')])->first();
+        include APPPATH . 'ThirdParty/phpqrcode/qrlib.php';
+
+        // Data to encode into QR code
+        $data = $this->request->getPost('appointment_id');
+
+        // QR code filename
+        $filename = 'qr_code_' . time() . '.png';
+
+        // Path to save the QR code image
+        $path = FCPATH . 'public/uploads/' . $filename;
+
+        // Generate QR code
+        \QRcode::png($data, $path);
+
+        // Display the QR code
+        $data['qr'] = '<img src="' . base_url('public/uploads/' . $filename) . '" />';
+        return view('booking/jobcard', $data);
+    }
