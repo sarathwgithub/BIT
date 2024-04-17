@@ -1,0 +1,42 @@
+<?= $this->extend('layouts/default') ?>
+<?= $this->section('content') ?>
+<section id="featured-services" class="featured-services">
+    <div class="container" data-aos="fade-up">
+        <div class="section-header">
+            <h2>Appointment Booking</h2>
+
+        </div>
+        <div class="row g-4 g-lg-5 " data-aos="fade-up" data-aos-delay="200">
+
+
+            <div class="col-md-12" data-aos="zoom-out"">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"></h5>
+                        <?php
+                        if (!$isavailable) {
+                            ?>
+                            <h2 class='text-warning text-center'>Slot is not available for <?= $date ?> at <?= $start_time ?>. Doctor might be occupied with another patient.</h2>
+                            <?php
+                        } else {
+                            ?> 
+                            <h2 class='text-success text-center'>Slot is available for <?= $date ?> at <?= $start_time ?>.</h2>
+                            <?php
+                            if (session()->get('isLoggedIn')) {
+                                ?>
+                                <a href="<?= site_url('appointment/confirm_booking') ?>">Confirm Booking</a>
+                                <?php
+                            } else {
+                                ?>
+                                <a href="<?= site_url('user/login') ?>">Confirm Booking</a>
+                                <?php
+                            }
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<?= $this->endSection() ?>
