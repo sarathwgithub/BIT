@@ -1,0 +1,41 @@
+<?= $this->extend('layouts/default_backend_dashboard') ?>
+<?= $this->section('content') ?>
+<div class="col-md-12">
+    <a href="<?= site_url('appointment/scan_qr') ?>" class="btn btn-success mb-2"><i class="bi bi-plus-circle"></i> Scan QR</a>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+
+            <!-- Default Table -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        
+                        <th scope="col">Customer</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Start Time</th>
+                        <th scope="col">End Time</th>                        
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if($appointment){
+                    foreach ($appointment as $key => $value) {
+                        ?>
+                        <tr>                            
+                            <td><?= $value['FirstName'] ?></td>
+                            <td><?= $value['date'] ?></td>
+                            <td><?= $value['start_time'] ?></td>
+                            <td><?= $value['end_time'] ?></td>                           
+                            
+                        </tr>
+                    <?php }} ?>
+                </tbody>
+            </table>
+            <!-- End Default Table Example -->
+        </div>
+    </div>
+</div>
+
+<?= $this->endSection() ?>
