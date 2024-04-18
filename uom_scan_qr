@@ -1,0 +1,51 @@
+<?= $this->extend('layouts/default_backend_dashboard') ?>
+<?= $this->section('content') ?>
+<div class="col-md-12">
+    
+    <div class="card">
+        <div class="card-body">
+            <script src="<?= site_url('public/assets/qr_scanner/instascan.min.js')?>" type="text/javascript"></script>
+<div class="row">
+    <div class="col-4">  
+
+        <video id="scan_job" height="200" width="285" class="border border-1 border-black"></video>
+        <br>
+        <button type="button" class="btn btn-success" onclick="scanjob()">Start Scan</button>
+        <button type="button" class="btn btn-warning" onclick="stopscan()">Stop Scan</button>
+    </div>
+</div>
+            
+        </div>
+    </div>
+</div>
+<script>
+    function scanjob() {
+        let scanner = new Instascan.Scanner({video: document.getElementById('scan_job')});
+        scanner.addListener('scan', function (content) {
+            findAppointment(content);
+            //alert(content);
+        });
+        Instascan.Camera.getCameras().then(function (cameras) {
+            if (cameras.length > 0) {
+                scanner.start(cameras[0]);
+            } else {
+                console.error('No cameras found.');
+            }
+        }).catch(function (e) {
+            console.error(e);
+        });
+    }
+
+    function stopscan() {
+        const video = document.querySelector('video');
+        const mediaStream = video.srcObject;
+        const tracks = mediaStream.getTracks();
+        tracks[0].stop();
+        tracks.forEach(track => track.stop())
+    }
+
+    function findAppointment(appointmentid) {
+        window.location.href = "<?php echo site_url('appointment/find/') ?>" + appointmentid
+    }
+</script>
+<?= $this->endSection() ?>
