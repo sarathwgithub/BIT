@@ -1,0 +1,159 @@
+<?php
+ob_start();
+include_once '../init.php';
+
+$link = "Inventory Management";
+$breadcrumb_item = "Inventory";
+$breadcrumb_item_active = "Manage";
+?> 
+<div class="row">
+    <div class="col-12">
+        <a href="<?= SYS_URL ?>inventory/add_stock.php" class="btn btn-dark mb-2"><i class="fas fa-plus-circle"></i> Add Stock</a>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">User Details</h3>
+
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-default">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <?php
+                $db = dbConn();
+                $sql = "SELECT
+    `item_stock`.`id`
+    , `items`.`item_name`
+    , `item_category`.`category_name`
+    , `item_stock`.`unit_price`
+    , `item_stock`.`qty`
+    , `item_stock`.`purchase_date`
+    , `supplier`.`supplier_name`
+FROM
+    `bittest`.`items`
+    INNER JOIN `bittest`.`item_stock` 
+        ON (`items`.`id` = `item_stock`.`item_id`)
+    INNER JOIN `bittest`.`item_category` 
+        ON (`item_category`.`id` = `items`.`item_category`)
+    INNER JOIN `bittest`.`supplier` 
+        ON (`supplier`.`id` = `item_stock`.`supplier_id`);";
+                $result = $db->query($sql);
+                ?>
+                <div class="input-group mb-3">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search...">
+                    <button class="btn btn-outline-secondary" type="button" onclick="searchTable()">Search</button>
+                </div>
+                <table class="table table-hover text-nowrap" id="myTable">
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Category</th>
+                            <th>Unit Price</th>
+                            <th>Qty</th>
+                            <th>Purchase Date</th>
+                            <th>Supplier</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                ?>
+                                <tr>
+                                    <td><?= $row['item_name'] ?></td>
+                                    <td><?= $row['category_name'] ?></td>
+                                    <td><?= $row['unit_price'] ?></td>
+                                    <td><?= $row['qty'] ?></td>
+                                    <td><?= $row['purchase_date'] ?></td>
+                                    <td><?= $row['supplier_name'] ?></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+
+                                <?php
+                            }
+                        }
+                        ?>
+                    </tbody>
+                </table>
+                <div id="pagination" class="d-flex justify-content-center"></div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+<?php
+$content = ob_get_clean();
+include '../layouts.php';
+?>
+<script>
+    // Number of items per page
+    var itemsPerPage = 5;
+
+    // Initialize table and pagination
+    function initTablePagination() {
+        var table = document.getElementById("myTable");
+        var rows = table.getElementsByTagName("tr");
+        var numRows = rows.length - 1; // Exclude the header row
+
+        // Calculate number of pages
+        var numPages = Math.ceil(numRows / itemsPerPage);
+
+        // Generate pagination buttons
+        var pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+        for (var i = 1; i <= numPages; i++) {
+            var button = document.createElement("button");
+            button.innerHTML = i;
+            button.classList.add("btn", "btn-outline-primary", "mx-1");
+            button.onclick = function () {
+                changePage(this.innerHTML);
+            };
+            pagination.appendChild(button);
+        }
+
+        // Show first page by default
+        showPage(1);
+    }
+
+    // Function to display specific page
+    function showPage(pageNumber) {
+        var table = document.getElementById("myTable");
+        var rows = table.getElementsByTagName("tr");
+        var startIndex = (pageNumber - 1) * itemsPerPage + 1; // Start index of rows to be shown
+        var endIndex = pageNumber * itemsPerPage + 1; // End index of rows to be shown
+
+        // Hide all rows
+        for (var i = 1; i < rows.length; i++) {
+            rows[i].style.display = "none";
+        }
+
+        // Show rows for current page
+        for (var i = startIndex; i < endIndex && i < rows.length; i++) {
+            rows[i].style.display = "";
+        }
+    }
+
+    // Function to change page
+    function changePage(pageNumber) {
+        showPage(pageNumber);
+    }
+    // Function to search the table
+    
+    // Call initTablePagination function when the page loads
+    document.addEventListener("DOMContentLoaded", function () {
+        initTablePagination();
+    });
+</script>
+
