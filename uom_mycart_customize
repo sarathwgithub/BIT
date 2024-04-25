@@ -46,8 +46,8 @@ class Mycart extends BaseController {
     }
     public function viewCart() {
         $cart = cart();
-        $c = $cart->contents();
-        print_r($c);
+        $data['cart'] = $cart->contents();
+        return view('product/view_cart', $data);
     }
     public function clearCart(){
          $cart = cart();
