@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Controllers;
+use App\Models\DishOptionModel;
+
+class Mycart extends BaseController {
+
+    
+// Call the cart service using the helper function
+    public function addCart() {
+        
+        $DishOptionModel = new DishOptionModel();
+        $disoption=$DishOptionModel->where('Id',$this->request->getPost('dish_options'))->first();
+        $cart = cart();
+        $cart->insert(array(
+            'id' => $this->request->getPost('Id'),
+            'qty' => $this->request->getPost('Qty'),
+            'price' => $this->request->getPost('Price'),
+            'name' => $this->request->getPost('Name'),
+            'options' => array('dish_options' => $this->request->getPost('dish_options'),'dish_options_name' =>@$disoption['Description'])
+        ));
+        
+        return redirect()->to('product');
+    }
+
+    public function updateCart() {
+        $cart = cart();
+        $cart->update(array(
+            'rowid' => 'de17a911712ff6fadc2c5b2c32b3157b',
+            'id' => 'sku_1234ABCD',
+            'qty' => 5,
+            'price' => '24.89',
+            'name' => 'T-Shirt',
+            'options' => array('Size' => 'L', 'Color' => 'Red')
+        ));
+    }
+
+    public function getTotalItems() {
+        $cart = cart();
+        echo $cart->totalItems();
+    }
+
+    public function removeItem() {
+          $cart = cart();
+        $cart->remove('68afdf4aa4d7e6551d9eac132c008749');
+    }
+    public function viewCart() {
+        $cart = cart();
+        $c = $cart->contents();
+        print_r($c);
+    }
+    public function clearCart(){
+         $cart = cart();
+        $cart->destroy();
+    }
+
+}
+
