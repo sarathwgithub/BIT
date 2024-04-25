@@ -1,0 +1,76 @@
+-- Category Table
+CREATE TABLE Category (
+    Id INT PRIMARY KEY,
+    Description VARCHAR(255),
+    Status VARCHAR(50)
+);
+
+-- FoodItem Table
+CREATE TABLE FoodItem (
+    Id INT PRIMARY KEY,
+    Name VARCHAR(255),
+    Price DECIMAL(10, 2),
+    Image VARCHAR(255),
+    CategoryId INT,
+    Description TEXT,
+    MinOrderQuantity INT,
+    PreparationTime VARCHAR(50),
+    Discount DECIMAL(5, 2),
+    FOREIGN KEY (CategoryId) REFERENCES Category(Id)
+);
+
+-- DishOption Table
+CREATE TABLE DishOption (
+    Id INT PRIMARY KEY,
+    Description VARCHAR(255)
+);
+
+-- FoodItemDishOption Table
+CREATE TABLE FoodItemDishOption (
+    Id INT PRIMARY KEY,
+    FoodItemId INT,
+    DishOptionId INT,
+    FOREIGN KEY (FoodItemId) REFERENCES FoodItem(Id),
+    FOREIGN KEY (DishOptionId) REFERENCES DishOption(Id)
+);
+
+-- RelatedProduct Table
+CREATE TABLE RelatedProduct (
+    Id INT PRIMARY KEY,
+    MainFoodItemId INT,
+    RelatedFoodItemId INT,
+    FOREIGN KEY (MainFoodItemId) REFERENCES FoodItem(Id),
+    FOREIGN KEY (RelatedFoodItemId) REFERENCES FoodItem(Id)
+);
+
+INSERT INTO Category (Id, Description, Status) VALUES
+(1, 'Beverages', 'Active'),
+(2, 'Appetizers', 'Active'),
+(3, 'Main Course', 'Active'),
+(4, 'Desserts', 'Active');
+
+-- Inserting data into FoodItem table
+INSERT INTO FoodItem (Id, Name, Price, Image, CategoryId, Description, MinOrderQuantity, PreparationTime, Discount) VALUES
+(1, 'Espresso', 2.50, 'espresso.jpg', 1, 'Strong and dark', 1, '5 mins', 0),
+(2, 'Chicken Wings', 10.99, 'wings.jpg', 2, 'Spicy chicken wings', 1, '15 mins', 5),
+(3, 'Spaghetti Bolognese', 12.99, 'spaghetti.jpg', 3, 'Classic Italian pasta', 1, '20 mins', 10),
+(4, 'Cheesecake', 6.99, 'cheesecake.jpg', 4, 'Creamy and delicious', 1, '30 mins', 0);
+
+-- Inserting data into DishOption table
+INSERT INTO DishOption (Id, Description) VALUES
+(1, 'Spicy'),
+(2, 'Extra Cheese'),
+(3, 'Gluten-free'),
+(4, 'Vegan');
+
+-- Inserting data into FoodItemDishOption table
+INSERT INTO FoodItemDishOption (Id, FoodItemId, DishOptionId) VALUES
+(1, 2, 1),
+(2, 3, 2),
+(3, 3, 3),
+(4, 4, 2);
+
+-- Inserting data into RelatedProduct table
+INSERT INTO RelatedProduct (Id, MainFoodItemId, RelatedFoodItemId) VALUES
+(1, 1, 2),
+(2, 3, 4);
