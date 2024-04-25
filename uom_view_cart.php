@@ -29,6 +29,7 @@
                 <th>Price</th>
                 <th>Options</th>
                 <th>Subtotal</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -45,6 +46,7 @@
                     <?php endif; ?>
                 </td>
                 <td>$<?= $item['subtotal'] ?></td>
+                <td><a href="<?= site_url('mycart/removeItem/').$item['rowid'] ?> ?>">Remove</a></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
