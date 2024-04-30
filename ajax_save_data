@@ -1,0 +1,124 @@
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    extract($_POST);
+    $message = array();
+    // Get form data
+    if (empty($customer_name)) {
+        $message['customer_name'] = "The Customer Name should not be blank";
+    }
+    if (empty($message)) {
+        $response = array('success' => true, 'message' => $message);
+    } else {
+        $response = array('success' => false, 'message' => $message);
+    }
+    // Return the JSON response
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit;
+}
+?>
+<?php include '../header.php'; ?>
+<?php include '../menu.php'; ?>
+
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Manage Customer</h1>
+
+    </div>
+    <form id="form_customer" method="post"  action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>">
+        
+        
+        <label>Enter Customer Name</label>
+        <input type="text" name="customer_name" id="customer_name">
+        <div id="error_customer" class="text-danger"></div>
+        <label>Select District</label>
+        <?php
+        $db = dbConn();
+        $sql = "SELECT * FROM tbl_district";
+        $result = $db->query($sql);
+        ?>
+        <select name="district" id="district" onchange="loadCity()">
+            <option value="">--</option>
+            <?php
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    ?>
+                    <option value="<?= $row['district_code'] ?>"><?= $row['district_name'] ?></option>
+                    <?php
+                }
+            }
+            ?>
+        </select>
+        <div id="city_list">
+
+        </div>
+        <button type="button" name="action" value="save" id="save" onclick="saveData();">Save</button>
+    </form>
+    <button type="button" onclick="openModel()">Open My Model</button>
+    <div class="modal fade" id="citylist" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="content"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<?php include '../footer.php'; ?>
+<script>
+    function loadCity() {
+        var formData = $('#form_customer').serialize();
+        $.ajax({
+            type: 'POST',
+            url: 'citylist.php',
+            data: formData,
+            success: function (response) {
+                $('#city_list').html(response);
+                //$('#citylist').modal('show');
+            },
+            error: function () {
+                alert('Error submitting the form!');
+            }
+        });
+    }
+
+    function openModel() {
+        $('#citylist').modal('show');
+    }
+    function saveData() {
+        //var formData = $('#form_customer').serialize();
+        var formData = new FormData($('#form_customer')[0]);
+        alert(formData);
+        $.ajax({
+            type: 'POST',
+            url: 'manage.php',
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            success: function (response) {
+                
+                if (response.success) {
+                    $('#error_customer').html('');
+                    $('#form_customer')[0].reset(); // Reset the form
+                } else {
+                    if (response.message.customer_name) {
+                        $('#error_customer').html(response.message.customer_name);
+                    }
+                }
+            },
+            error: function () {
+                alert('Error submitting the form!');
+            }
+        });
+    }
+</script>
