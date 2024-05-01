@@ -1,8 +1,7 @@
 CREATE TABLE `order_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) DEFAULT NULL,
-  `item_id` int(11) DEFAULT NULL,
-  `stock_id` int(11) DEFAULT NULL,
+  `item_id` int(11) DEFAULT NULL,  
   `unit_price` decimal(10,2) DEFAULT NULL,
   `qty` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
