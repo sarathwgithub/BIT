@@ -4,7 +4,7 @@
     </head>
     <body>
         <h2>Checkout Form</h2>
-        <?= form_open('cart/complete_checkout') ?>
+        <?= form_open('mycart/complete_checkout') ?>
         <h3>Delivery Details</h3>
         <label for="delivery_name">Name:</label>
         <input type="text" id="delivery_name" name="delivery_name" required><br>
