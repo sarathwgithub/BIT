@@ -1,0 +1,47 @@
+public function complete_checkout() {
+
+        $rules = [
+            'delivery_name' => 'required',
+            'delivery_address' => 'required',
+            'delivery_phone' => 'required',
+        ];
+        if (!$this->validate($rules)) {
+            return view('cart/checkout');
+        }
+        $customerModel = new CustomerModel();
+        $customer = $customerModel->where('UserId', session()->get('id'))->first();
+        $orderData = [
+            'delivery_name' => $this->request->getPost('delivery_name'),
+            'delivery_address' => $this->request->getPost('delivery_address'),
+            'delivery_phone' => $this->request->getPost('delivery_phone'),
+            'billing_name' => $this->request->getPost('billing_name'),
+            'billing_address' => $this->request->getPost('billing_address'),
+            'billing_phone' => $this->request->getPost('billing_phone'),
+            'order_date' => date('Y-m-d'),
+            'customer_id' => $customer['Id']
+        ];
+
+        $order = new OrderModel();
+        $order->save($orderData);
+        $orderId = $order->getInsertID();
+
+        $order_number = date('Y') . '/' . date('m') . '/' . date('d') . '/' . $orderId;
+        $orderData = [
+            'order_number' => $order_number
+        ];
+        $order->where(['id' => $orderId])->set($orderData)->update();
+
+        $cart = cart();
+        $items = $cart->contents();
+        foreach ($items as $item) {
+            $itemData = [
+                'order_id' => $orderId,
+                'item_id' => $item['id'],
+                'unit_price' => $item['price'],
+                'qty' => $item['qty'],
+                'dish_options' => $item['options']['dish_options']
+            ];
+            $orderItem = new OrderItemModel();
+            $orderItem->save($itemData);
+        }
+    }
