@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <title>Checkout</title>
+    </head>
+    <body>
+        <h2>Checkout Form</h2>
+        <?= form_open('cart/complete_checkout') ?>
+        <h3>Delivery Details</h3>
+        <label for="delivery_name">Name:</label>
+        <input type="text" id="delivery_name" name="delivery_name" required><br>
+        <label for="delivery_address">Address:</label>
+        <textarea id="delivery_address" name="delivery_address" required></textarea><br>
+        <label for="delivery_phone">Phone:</label>
+        <input type="text" id="delivery_phone" name="delivery_phone" required><br>
+        <input type="checkbox" id="same_as_delivery" name="same_as_delivery">
+        <label for="same_as_delivery">Same as Delivery Details</label><br>
+
+        <h3>Billing Details</h3>
+        <label for="billing_name">Name:</label>
+        <input type="text" id="billing_name" name="billing_name" required><br>
+        <label for="billing_address">Address:</label>
+        <textarea id="billing_address" name="billing_address" required></textarea><br>
+        <label for="billing_phone">Phone:</label>
+        <input type="text" id="billing_phone" name="billing_phone" required><br>
+        <button type="submit">Checkout</button>
+        <?= form_close() ?>
+
+        <script>
+            // Script to copy delivery details to billing details
+            document.getElementById('same_as_delivery').addEventListener('change', function () {
+                if (this.checked) {
+                    document.getElementById('billing_name').value = document.getElementById('delivery_name').value;
+                    document.getElementById('billing_address').value = document.getElementById('delivery_address').value;
+                    document.getElementById('billing_phone').value = document.getElementById('delivery_phone').value;
+                } else {
+                    document.getElementById('billing_name').value = '';
+                    document.getElementById('billing_address').value = '';
+                    document.getElementById('billing_phone').value = '';
+                }
+            });
+        </script>
+    </body>
+</html>
