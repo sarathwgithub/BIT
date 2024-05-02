@@ -1,0 +1,38 @@
+<?= $this->extend('layouts/default_backend_dashboard') ?>
+<?= $this->section('content') ?>
+<div class="col-md-12">
+    <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+
+              <!-- Default Table -->
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Order Date</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Delivery Details</th>
+                    <th scope="col">Billing Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php
+                  foreach ($order as $key=>$value){
+                  ?>
+                    <tr>
+                    <th scope="row"><?= $key+1 ?></th>
+                    <td><?= $value['order_date'] ?></td>
+                    <td><?= $value['customer_id'] ?></td>
+                    <td><?= $value['delivery_name'] ?></td>
+                    <td><?= $value['billing_name'] ?></td>
+                  </tr>
+                  <?php } ?>
+                </tbody>
+              </table>
+              <!-- End Default Table Example -->
+            </div>
+          </div>
+</div>
+
+<?= $this->endSection() ?>
