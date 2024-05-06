@@ -37,15 +37,15 @@ function uploadFiles($files) {
                     $messages[$key]['upload'] = true;
                     $messages[$key]['file'] = $file_name;
                 } else {
-                    $messages['upload'] = false;
+                    $messages[$key]['upload'] = false;
                     $messages[$key]['size'] = "The file size is invalid for $filename";
                 }
             } else {
-                $messages['upload'] = false;
+                $messages[$key]['upload'] = false;
                 $messages[$key]['uploading'] = "Error occurred while uploading $filename";
             }
         } else {
-            $messages['upload'] = false;
+            $messages[$key]['upload'] = false;
             $messages[$key]['type'] = "Invalid file type for $filename";
         }
     }
@@ -73,7 +73,9 @@ function uploadFiles($files) {
             <input type="text" id="itemPrice" name="itemPrice" required><br><br>
 
             <label for="itemImages">Select Images (Max 3):</label><br>
-            <input type="file" id="itemImages" name="itemImages[]" accept="image/*" multiple required><br><br>
+            <input type="file" id="itemImages" name="itemImages[]" ><br><br>
+            <input type="file" id="itemImages" name="itemImages[]" ><br><br><!-- comment -->
+            <input type="file" id="itemImages" name="itemImages[]" ><br><br>
 
             <input type="submit" value="Upload Images" name="submit">
         </form>
