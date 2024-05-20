@@ -1,0 +1,34 @@
+<?php
+
+include_once '../init.php';
+$db = dbConn();
+$issue = 10;
+$item = 1;
+while ($issue > 0) {
+    $sql = "SELECT *
+FROM `item_stock`
+WHERE item_id = $item
+  AND (qty - COALESCE(issued_qty, 0)) > 0
+ORDER BY `purchase_date` ASC
+LIMIT 1";
+    $result = $db->query($sql);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+
+        if ($issue <= $row['qty']) {
+            $i_qty = $issue;
+            $s_id = $row['id'];
+            $sql = "UPDATE `item_stock` SET issued_qty='$i_qty'
+WHERE id = '$s_id'";
+            $db->query($sql);
+        } else {
+            $i_qty = $row['qty'];
+            $s_id = $row['id'];
+            $sql = "UPDATE `item_stock` SET issued_qty='$i_qty'
+WHERE id = '$s_id'";
+            $db->query($sql);
+        }
+    }
+    echo $issue = $issue - $i_qty;
+}
