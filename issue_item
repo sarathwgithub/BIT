@@ -2,33 +2,43 @@
 
 include_once '../init.php';
 $db = dbConn();
-$issue = 10;
+$issue = 14;
 $item = 1;
+
 while ($issue > 0) {
+    // Select the oldest stock record for the item which still has quantity available
     $sql = "SELECT *
-FROM `item_stock`
-WHERE item_id = $item
-  AND (qty - COALESCE(issued_qty, 0)) > 0
-ORDER BY `purchase_date` ASC
-LIMIT 1";
+            FROM `item_stock`
+            WHERE item_id = $item
+              AND (qty - COALESCE(issued_qty, 0)) > 0
+            ORDER BY `purchase_date` ASC
+            LIMIT 1";
     $result = $db->query($sql);
 
+    // If a stock record is found
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
 
-        if ($issue <= $row['qty']) {
+        // Calculate the remaining quantity of the current stock record
+        $remaining_qty = $row['qty'] - ($row['issued_qty'] ?? 0);
+
+        if ($issue <= $remaining_qty) {
+            // If the issue quantity is less than or equal to the remaining quantity
             $i_qty = $issue;
             $s_id = $row['id'];
-            $sql = "UPDATE `item_stock` SET issued_qty='$i_qty'
-WHERE id = '$s_id'";
+            $sql = "UPDATE `item_stock` SET issued_qty = COALESCE(issued_qty, 0) + $i_qty WHERE id = $s_id";
             $db->query($sql);
+            $issue = 0; // All items have been issued
         } else {
-            $i_qty = $row['qty'];
+            // If the issue quantity is more than the remaining quantity
+            $i_qty = $remaining_qty;
             $s_id = $row['id'];
-            $sql = "UPDATE `item_stock` SET issued_qty='$i_qty'
-WHERE id = '$s_id'";
+            $sql = "UPDATE `item_stock` SET issued_qty = COALESCE(issued_qty, 0) + $i_qty WHERE id = $s_id";
             $db->query($sql);
+            $issue -= $i_qty; // Subtract the issued quantity from the total issue quantity
         }
+    } else {
+        // If no stock record is found, break the loop
+        break;
     }
-    echo $issue = $issue - $i_qty;
 }
