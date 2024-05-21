@@ -1,0 +1,98 @@
+Step 1: User Registration Page
+<?php
+require 'dbConn.php'; // Ensure this file includes the dbConn function
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $db = dbConn();
+
+    // User inputs
+    $email = $db->real_escape_string($_POST['email']);
+    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+    $token = bin2hex(random_bytes(16)); // Generate a unique token
+
+    // Insert user into the database with verification token
+    $sql = "INSERT INTO users (email, password, token, is_verified) VALUES ('$email', '$password', '$token', 0)";
+    if ($db->query($sql) === TRUE) {
+        // Send verification email
+        $verificationLink = "http://yourwebsite.com/verify.php?token=$token";
+        $subject = "Verify Your Email";
+        $message = "Click this link to verify your email: $verificationLink";
+        mail($email, $subject, $message);
+
+        echo "Registration successful! Please check your email to verify your account.";
+    } else {
+        echo "Error: " . $sql . "<br>" . $db->error;
+    }
+
+    $db->close();
+}
+?>
+<!DOCTYPE html>
+<html>
+<body>
+    <form action="registration.php" method="post">
+        Email: <input type="email" name="email" required>
+        Password: <input type="password" name="password" required>
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>
+---------------------------------------------------------------------------------------------------
+  Step 2: Verification Page
+  <?php
+require 'dbConn.php'; // Ensure this file includes the dbConn function
+
+if (isset($_GET['token'])) {
+    $db = dbConn();
+    $token = $db->real_escape_string($_GET['token']);
+
+    // Verify the token
+    $sql = "SELECT id FROM users WHERE token = '$token' AND is_verified = 0";
+    $result = $db->query($sql);
+
+    if ($result->num_rows > 0) {
+        // Token is valid, mark the user as verified
+        $row = $result->fetch_assoc();
+        $userId = $row['id'];
+
+        $updateSql = "UPDATE users SET is_verified = 1, token = NULL WHERE id = $userId";
+        if ($db->query($updateSql) === TRUE) {
+            echo "Your email has been verified! You can now access the restricted page.";
+        } else {
+            echo "Error: " . $updateSql . "<br>" . $db->error;
+        }
+    } else {
+        echo "Invalid or expired token.";
+    }
+
+    $db->close();
+} else {
+    echo "No token provided.";
+}
+?>
+--------------------------------------------------------------------------------------------
+      Step 3: Restricted Page
+      <?php
+session_start();
+require 'dbConn.php'; // Ensure this file includes the dbConn function
+
+$db = dbConn();
+$userId = intval($_SESSION['user_id']); // Assuming the user_id is stored in the session as an integer
+
+// Check if the user is verified
+$sql = "SELECT is_verified FROM users WHERE id = $userId";
+$result = $db->query($sql);
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    if ($row['is_verified'] == 1) {
+        echo "Welcome to the restricted page!";
+    } else {
+        echo "You need to verify your email to access this page.";
+    }
+} else {
+    echo "User not found.";
+}
+
+$db->close();
+?>
