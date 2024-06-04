@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $pw = password_hash($Password, PASSWORD_DEFAULT);
 
         $employee = new Employee();
-        $employee->insertEmployee($FirstName, $LastName, $UserName, $pw, $AppDate, $DesignationId, $DepartmentId);
+        $employee->save($FirstName, $LastName, $UserName, $pw, $AppDate, $DesignationId, $DepartmentId);
 
         header("Location:manage.php");
     }
