@@ -14,7 +14,7 @@ class User {
         return $result->num_rows;
     }
     
-    public function insertUser($FirstName, $LastName, $UserName, $Password, $UserType, $Status) {
+    public function save($FirstName, $LastName, $UserName, $Password, $UserType, $Status) {
         $pw = password_hash($Password, PASSWORD_BCRYPT);  // Hash the password for security
 
         // Insert into users table
