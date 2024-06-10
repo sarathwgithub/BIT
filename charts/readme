@@ -1,0 +1,9 @@
+insert into your_table (`order_date`, `customer_id`, `delivery_name`, `delivery_address`, `delivery_phone`, `billing_name`, `billing_address`, `billing_phone`, `order_number`, `new_order_flag`)
+select `order_date`, `customer_id`, `delivery_name`, `delivery_address`, `delivery_phone`, `billing_name`, `billing_address`, `billing_phone`, `order_number`, `new_order_flag`
+from your_table
+where id = 1
+
+insert into order_items (`order_id`, `item_id`, `stock_id`, `unit_price`, `qty`) select `order_id`, `item_id`, `stock_id`, `unit_price`, `qty` from order_items where id = 1;
+
+
+SELECT DATE_FORMAT(o.order_date, '%M') as month,sum(i.unit_price*i.qty) as 'amt' FROM `order_items` i inner JOIN orders o on o.id=i.order_id group by month(o.order_date);
