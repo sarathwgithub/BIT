@@ -1,0 +1,86 @@
+Admin Lte Calendar Customization
+
+1. Show Selected Date
+ $('.table').on('click', 'td[data-action="selectDay"]', function () {
+            var selectedDate = $(this).data('day'); // Get the value of the 'data-day' attribute
+            // Show an alert for debugging purposes
+            alert('Selected date: ' + selectedDate);
+           
+        });
+
+2. To redirect to another page with the selected date
+$('.table').on('click', 'td[data-action="selectDay"]', function() {
+            var selectedDate = $(this).data('day'); // Get the value of the 'data-day' attribute
+            var newUrl = 'showleave.php?date=' + selectedDate;
+            // Redirect to the new page
+            window.location.href = newUrl;
+
+        });
+3.To use PHP and MySQL to create an employee leave table and display leave details for a selected date
+Step 1: Create the MySQL Table
+CREATE TABLE employee_leaves (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id INT,  
+    leave_date DATE,
+    leave_type VARCHAR(255)
+);
+
+INSERT INTO employee_leaves (employee_id, leave_date, leave_type) VALUES
+(1,  '2024-06-01', 'Sick Leave'),
+(2,  '2024-06-02', 'Vacation'),
+(3,  '2024-06-03', 'Personal Leave');
+
+
+Step 2: Create the PHP Script to Show Leave Details
+<?php
+ob_start();
+include_once 'init.php';
+
+?>
+
+<?php
+extract($_GET);
+$db = dbConn();
+$date = DateTime::createFromFormat('m/d/Y', $date)->format('Y-m-d');
+$sql = "SELECT * FROM employee_leaves WHERE leave_date='$date'";
+$result = $db->query($sql);
+
+
+?>
+<div class="row">
+    <div class="col">
+        <table class="table table-hover text-nowrap" id="myTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>leave_type</th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                ?>
+                        <tr>
+                            <td><?= $row['employee_id'] ?></td>
+                            <td><?= $row['leave_date'] ?></td>
+                            <td><?= $row['leave_type'] ?></td>
+
+                        </tr>
+
+                <?php
+                    }
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<?php
+$content = ob_get_clean();
+include 'layouts.php';
+?>
+
