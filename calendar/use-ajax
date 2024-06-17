@@ -1,0 +1,17 @@
+$('.table').on('click', 'td[data-action="selectDay"]', function () {
+            var selectedDate = $(this).data('day'); // Get the value of the 'data-day' attribute
+
+            // Show an alert for debugging purposes
+            alert('Selected date: ' + selectedDate);
+            $.ajax({
+                url: 'getleave.php?selectedDate=' + selectedDate,
+                type: 'GET',
+                success: function (data) {
+                    $("#leavedata").html(data);
+                    setdate();
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', status, error);
+                }
+            });
+        });
