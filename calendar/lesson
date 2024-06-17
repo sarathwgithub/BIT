@@ -84,3 +84,48 @@ $content = ob_get_clean();
 include 'layouts.php';
 ?>
 
+3. PHP Code to Fetch Leave Dates ON Calendar
+Step 1: Update calendar file to Fetch Leave Dates
+<?php
+$db = dbConn();
+$sql = "SELECT leave_date FROM employee_leaves GROUP BY leave_date";
+$result = $db->query($sql);
+
+$customDates = array();
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $customDates[] = $row['leave_date'];
+    }
+}
+
+
+?>
+
+<style>
+    .highlight {
+        background-color: yellow;
+    }
+
+    /* Custom highlight style */
+</style>
+$(document).ready(function () {
+//call setdate function
+        setdate();
+});
+function setdate() {
+            var customDates = <?php echo json_encode($customDates); ?>;
+            // Convert each custom date to the same format as used in the data-day attributes
+            customDates = customDates.map(function (date) {
+                var dateParts = date.split('-');
+                return dateParts[1] + '/' + dateParts[2] + '/' + dateParts[0];
+            });
+
+            // Iterate through the calendar cells to find the matching dates
+            $('.table td[data-action="selectDay"]').each(function () {
+                var cellDate = $(this).data('day');
+                if (customDates.includes(cellDate)) {
+                    // Add a class to highlight the matching date
+                    $(this).addClass('highlight');
+                }
+            });
+        }
