@@ -1,0 +1,97 @@
+<div class="sidebar">
+                    <!-- Sidebar user panel (optional) -->
+                    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+
+                        <div class="info">
+                            <a href="#" class="d-block"><?= $_SESSION['FIRSTNAME'] . " " . $_SESSION['LASTNAME'] ?></a>
+                        </div>
+                    </div>
+
+                    <!-- SidebarSearch Form -->
+                    <div class="form-inline">
+                        <div class="input-group" data-widget="sidebar-search">
+                            <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+                            <div class="input-group-append">
+                                <button class="btn btn-sidebar">
+                                    <i class="fas fa-search fa-fw"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                    $userid = $_SESSION['USERID'];
+                    $db = dbConn();
+                    $sql = "SELECT * FROM  user_modules um INNER JOIN modules m ON m.Id=um.ModuleId WHERE um.UserId='$userid' AND m.Status='1' ORDER BY Idx ASC";
+                    $result = $db->query($sql);
+                    $current_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+                    $url_without_file = preg_replace('/\/[^\/]*$/', '', $current_url);
+                    ?>
+                    <!-- Sidebar Menu -->
+                    <nav class="mt-2">
+                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                            <?php
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+
+                                    $menu_url = SYS_URL . $row['Path'] . '/' . $row['File'] . '.php';
+
+                                    $menu_url_without_file = preg_replace('/\/[^\/]*$/', '', $menu_url);
+
+                                    $active_class = ($url_without_file == $menu_url_without_file ) ? 'active' : '';
+                                    $menu_open = ($url_without_file == $menu_url_without_file ) ? 'menu-open' : '';
+
+                                    $module_id = $row['ModuleId'];
+                                    $sql = "SELECT * FROM sub_modules WHERE module_id='$module_id'";
+                                    $result_sub_module = $db->query($sql);
+                                    if ($result_sub_module->num_rows > 0) {
+                                        ?>
+                                        <li class="nav-item <?= $menu_open ?>">
+                                            <a href="#" class="nav-link <?= $active_class ?>">
+                                                <i class="nav-icon fas fa-chart-pie"></i>
+                                                <p>
+                                                    <?= $row['Name'] ?>  
+                                                    <i class="right fas fa-angle-left"></i>
+                                                </p>
+                                            </a>
+                                            <ul class="nav nav-treeview" style="display: <?= $$display ?>;">
+                                                <?php
+                                                $active_class_sub = '';
+                                                $url_without_file_sub = preg_replace('/\.[^\/.]+$/', '', $current_url);
+                                                while ($row_sub_module = $result_sub_module->fetch_assoc()) {
+                                                    $menu_url_sub = SYS_URL . $row_sub_module['Path'] . '/' . $row_sub_module['File'] . '.php';
+                                                    $menu_url_without_file_sub = preg_replace('/\.[^\/.]+$/', '', $menu_url_sub);
+
+                                                    $active_class_sub = ($url_without_file_sub == $menu_url_without_file_sub ) ? 'active' : '';
+                                                    ?>
+                                                    <li class="nav-item">
+                                                        <a href="<?= $menu_url_sub ?>" class="nav-link <?= $active_class_sub ?>">
+                                                            <i class="far fa-circle nav-icon"></i>
+                                                            <p> <?= $row_sub_module['Name'] ?>  </p>
+                                                        </a>
+                                                    </li>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </ul>
+                                        </li>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <li class="nav-item">
+                                            <a href="<?= $menu_url ?>" class="nav-link <?= $active_class ?>">
+                                                <i class="nav-icon <?= $row['Icon'] ?>"></i>
+                                                <p>
+                                                    <?= $row['Name'] ?>                
+                                                </p>
+                                            </a>
+                                        </li>
+                                        <?php
+                                    }
+                                }
+                            }
+                            ?>
+
+                        </ul>
+                    </nav>
+                    <!-- /.sidebar-menu -->
+                </div>
