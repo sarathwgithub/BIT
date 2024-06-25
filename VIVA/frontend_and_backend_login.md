@@ -5,6 +5,7 @@
 2. Write the below function in your function file
     ```php
       function checkRole($role=null){
+        session_start();
         $user_id=$_SESSION['USERID'];
         $db = dbConn();
         $sql = "SELECT * FROM users u WHERE u.UserId='$user_id' AND u.user_role='$role' ";
