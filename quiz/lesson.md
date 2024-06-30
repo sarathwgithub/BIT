@@ -153,92 +153,82 @@
     
 6. Create a PHP script to fetch the quiz results
     ```php
-      session_start();
-      include '../../function.php';
-      $db = dbConn();
-      $user_id = $_SESSION['USERID'];
       
-      
-      $sql = "SELECT q.question, q.option1, q.option2, q.option3, q.option4, q.correct_option, r.selected_option, r.is_correct
-              FROM questions q
-              JOIN responses r ON q.id = r.question_id
-              WHERE r.user_id = $user_id";
-      $result = $db->query($sql);
-      
-      $results = array();
-      if ($result->num_rows > 0) {
-          while($row = $result->fetch_assoc()) {
-              $results[] = $row;
-          }
-      }
-      
-      echo json_encode($results);
-7. Create a php file to display the results
-    ```html
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Quiz Results</title>
-          <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-          <script>
-              
-      
-              function fetchResults() {
-                  $.ajax({
-                      url: 'fetch_results.php',
-                      method: 'GET',
-                      data: '',
-                      dataType: 'json',
-                      success: function(data) {
-                          displayResults(data);
-                      }
-                  });
-              }
-      
-              function displayResults(results) {
-                  let totalQuestions = results.length;
-                  let correctAnswers = results.filter(result => result.is_correct).length;
-                  let html = `<h2>Your Score: ${correctAnswers} / ${totalQuestions}</h2>`;
-      
-                  results.forEach(result => {
-                      html += `
-                          <div class="question">
-                              <p>${result.question}</p>
-                              <ul>
-                                  <li class="${result.correct_option == 1 ? 'correct' : ''} ${result.selected_option == 1 ? 'selected' : ''}">${result.option1}</li>
-                                  <li class="${result.correct_option == 2 ? 'correct' : ''} ${result.selected_option == 2 ? 'selected' : ''}">${result.option2}</li>
-                                  <li class="${result.correct_option == 3 ? 'correct' : ''} ${result.selected_option == 3 ? 'selected' : ''}">${result.option3}</li>
-                                  <li class="${result.correct_option == 4 ? 'correct' : ''} ${result.selected_option == 4 ? 'selected' : ''}">${result.option4}</li>
-                              </ul>
-                          </div>
-                      `;
-                  });
-      
-                  $('#results').html(html);
-              }
-      
-              $(document).ready(function() {
-                  fetchResults();
-              });
-          </script>
-          <style>
-              .correct {
-                  color: green;
-              }
-              .selected {
-                  font-weight: bold;
-              }
-          </style>
-      </head>
-      <body>
-          <h1>Quiz Results</h1>
-          <div id="results"></div>
-      </body>
-      </html>
+        session_start();
+        include '../../function.php';
+        $db = dbConn();
+        $user_id = $_SESSION['USERID'];
+        
+        
+        $sql = "SELECT q.question, q.option1, q.option2, q.option3, q.option4, q.correct_option, r.selected_option, r.is_correct
+                FROM questions q
+                JOIN responses r ON q.id = r.question_id
+                WHERE r.user_id = $user_id";
+        $result = $db->query($sql);
+        
+        $results = array();
+        $correct_answers = 0;
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                if ($row['is_correct']) {
+                    $correct_answers++;
+                }
+                $results[] = $row;
+            }
+        }
+        
+        $total_questions = count($results);
+        $total_marks = ($total_questions > 0) ? ($correct_answers / $total_questions) * 100 : 0;
+        ?>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Quiz Results</title>
+            <style>
+                .correct {
+                    color: green;
+                }
+                .selected-correct {
+                    font-weight: bold;
+                    color: green;
+                }
+                .selected-wrong {
+                    font-weight: bold;
+                    color: red;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Quiz Results</h1>
+            <h2>Your Score: <?php echo number_format($total_marks, 2); ?> / 100</h2>
+            <div id="results">
+                <?php foreach ($results as $result) : ?>
+                    <div class="question">
+                        <p><?php echo $result['question']; ?></p>
+                        <ul>
+                            <li class="<?php echo ($result['correct_option'] == 1 ? 'correct' : '') . ($result['selected_option'] == 1 ? ($result['is_correct'] ? ' selected-correct' : ' selected-wrong') : ''); ?>">
+                                <?php echo $result['option1']; ?>
+                            </li>
+                            <li class="<?php echo ($result['correct_option'] == 2 ? 'correct' : '') . ($result['selected_option'] == 2 ? ($result['is_correct'] ? ' selected-correct' : ' selected-wrong') : ''); ?>">
+                                <?php echo $result['option2']; ?>
+                            </li>
+                            <li class="<?php echo ($result['correct_option'] == 3 ? 'correct' : '') . ($result['selected_option'] == 3 ? ($result['is_correct'] ? ' selected-correct' : ' selected-wrong') : ''); ?>">
+                                <?php echo $result['option3']; ?>
+                            </li>
+                            <li class="<?php echo ($result['correct_option'] == 4 ? 'correct' : '') . ($result['selected_option'] == 4 ? ($result['is_correct'] ? ' selected-correct' : ' selected-wrong') : ''); ?>">
+                                <?php echo $result['option4']; ?>
+                            </li>
+                        </ul>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </body>
+        </html>
 
-8. Redirect to Results Page After Quiz Completion
+
+7. Redirect to Results Page After Quiz Completion
     ```html
       <!DOCTYPE html>
       <html lang="en">
