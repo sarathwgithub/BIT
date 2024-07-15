@@ -356,9 +356,9 @@ PHP Script to Save PDF on Server
       ?>
 
   ```
-  Send the generated PDF file as an attachment along with your email using PHPMailer
-  Modify sendEmail Function
-    ```php
+Send the generated PDF file as an attachment along with your email using PHPMailer
+Modify sendEmail Function
+  ```php
         function sendEmailWithAttachment($recipient = null, $recipient_name = null, $subject = null, $message = null, $attachment_path = null) {
           $mail = new PHPMailer(true);
       
@@ -402,9 +402,10 @@ PHP Script to Save PDF on Server
               echo "Mailer Error: {$mail->ErrorInfo}";
           }
       }
-    ```
-    Create Email sendig file
-      ```php
+```
+    
+Create Email sendig file
+  ```php
           <?php
           include '../../mail.php';
           
@@ -416,4 +417,4 @@ PHP Script to Save PDF on Server
           sendEmailWithAttachment("mpsarathw@gmail.com", "Sarath", "Account Verification", $msg,$pdf_file);
           
           ?>
-      ```
+  ```
