@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 **Create a payment slip with a logo and issue a receipt to a customer**
 -----------------------------------------------------------------------
-To create a payment slip with a logo and issue a receipt to a customer using PHP and FPDF, you can follow these steps
+To create a payment slip with a logo and issue a receipt to a customer using PHP and TCPDF, you can follow these steps
 Step 1: Install TCPDF
   Download TCPDF from tcpdf.org and include it in your project directory(https://github.com/tecnickcom/tcpdf)
 
