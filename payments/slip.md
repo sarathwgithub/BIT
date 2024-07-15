@@ -356,4 +356,64 @@ PHP Script to Save PDF on Server
       ?>
 
   ```
-  
+  Send the generated PDF file as an attachment along with your email using PHPMailer
+  Modify sendEmail Function
+    ```php
+        function sendEmailWithAttachment($recipient = null, $recipient_name = null, $subject = null, $message = null, $attachment_path = null) {
+          $mail = new PHPMailer(true);
+      
+          try {
+              // Set mailer to use SMTP
+              $mail->isSMTP();
+              $mail->SMTPDebug = 0; // Set to 2 for detailed debugging
+      
+              // SMTP configuration (example for Gmail)
+              $mail->Host = 'smtp.gmail.com';
+      
+              // Enable TLS encryption
+              $mail->SMTPSecure = 'tls';
+      
+              // Set the SMTP port (465 for SSL, 587 for TLS)
+              $mail->Port = 587;
+      
+              // Set your Gmail credentials
+              $mail->SMTPAuth = true;
+              $mail->Username = 'bitprojectclass@gmail.com'; // Your Gmail address
+              $mail->Password = 'xxxxxxxxxxx'; // Your Gmail password
+              // Set the 'from' address and recipient
+              $mail->setFrom('your@gmail.com', 'Your Name');
+              $mail->addAddress($recipient, $recipient_name);
+      
+              // Set email subject and body
+              $mail->Subject = $subject;
+              $mail->Body = $message;
+              $mail->isHTML(true);
+      
+              // Attach PDF file if path provided
+              if ($attachment_path !== null) {
+                  $mail->addAttachment($attachment_path);
+              }
+      
+              // Send the email
+              $mail->send();
+              
+              echo 'Email has been sent successfully';
+          } catch (Exception $e) {
+              echo "Mailer Error: {$mail->ErrorInfo}";
+          }
+      }
+    ```
+    Create Email sendig file
+      ```php
+          <?php
+          include '../../mail.php';
+          
+          $msg = "<h1>SUCCESS</h1>";
+          $msg .= "<h2>Congratulations</h2>";
+          $msg .= "<p>Your account has been successfully created</p>";
+          $msg .= "Click here to verifiy your account</a>";
+          $pdf_file = __DIR__ . '/../../docs/payment_receipt.pdf';
+          sendEmailWithAttachment("mpsarathw@gmail.com", "Sarath", "Account Verification", $msg,$pdf_file);
+          
+          ?>
+      ```
