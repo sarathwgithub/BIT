@@ -115,7 +115,7 @@ Step 3:Create a PHP script to generate the payment slip(payments\slip.php)
       $pdf->Cell(0, 10, $payment['customer_name'], 0, 1);
       
       $pdf->Cell(50, 10, 'Amount:', 0, 0);
-      $pdf->Cell(0, 10, '$' . number_format($payment['amount'], 2), 0, 1);
+      $pdf->Cell(0, 10, 'Rs.' . number_format($payment['amount'], 2), 0, 1);
       
       $pdf->Cell(50, 10, 'Payment Method:', 0, 0);
       $pdf->Cell(0, 10, $payment['payment_method'], 0, 1);
@@ -224,7 +224,7 @@ Custom Page Sizes
       $pdf->Cell(0, 10, $payment['customer_name'], 0, 1);
       
       $pdf->Cell(50, 10, 'Amount:', 0, 0);
-      $pdf->Cell(0, 10, '$' . number_format($payment['amount'], 2), 0, 1);
+      $pdf->Cell(0, 10, 'Rs.' . number_format($payment['amount'], 2), 0, 1);
       
       $pdf->Cell(50, 10, 'Payment Method:', 0, 0);
       $pdf->Cell(0, 10, $payment['payment_method'], 0, 1);
@@ -239,3 +239,4 @@ Custom Page Sizes
       ?>
 
   ```
+To display the PDF directly in the browser instead of forcing a download, you need to change the output destination parameter in the Output method from 'D' (download) to 'I' (inline display).
