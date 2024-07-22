@@ -1,4 +1,9 @@
-**Chaeck available beauticians**
+**check available of beauticians**
+
+To get the available beauticians for a particular date and time, you'll need to query the booking table to find out which beauticians are already booked at that specific time and then filter those out from the list of all beauticians.
+
+To handle the 15-minute job duration, you need to check for bookings that overlap with the desired booking time. This means you should check if there are any bookings within the 15-minute  before or after the desired time
+
 MySQL Tables
   ```sql
       -- Create the beautician table
